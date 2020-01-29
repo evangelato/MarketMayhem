@@ -120,7 +120,7 @@ NavMeshSettings:
     accuratePlacement: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 69eafa3a7bf0d44578418d37ea5dc371, type: 2}
 --- !u!1 &14874154
 GameObject:
   m_ObjectHideFlags: 0
@@ -745,6 +745,7 @@ GameObject:
   - component: {fileID: 1813327458}
   - component: {fileID: 1813327457}
   - component: {fileID: 1813327462}
+  - component: {fileID: 1813327463}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -858,6 +859,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sensitivity: 1
+--- !u!195 &1813327463
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813327456}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &2042601067
 GameObject:
   m_ObjectHideFlags: 0
