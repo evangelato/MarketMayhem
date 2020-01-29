@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     private GameObject _muzzleFlash;
     [SerializeField]
     private GameObject _hitMarkerPrefab;
+    [SerializeField]
+    private AudioSource _weaponAudio;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +38,10 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             _muzzleFlash.SetActive(true);
+            if (!_weaponAudio.isPlaying)
+            {
+                _weaponAudio.Play();
+            }
             Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hitInfo;
             if (Physics.Raycast(rayOrigin, out hitInfo, Mathf.Infinity))
@@ -48,6 +54,7 @@ public class Player : MonoBehaviour
         else 
         {
             _muzzleFlash.SetActive(false);
+            _weaponAudio.Stop();
         }
         CalculateMovement();
 
