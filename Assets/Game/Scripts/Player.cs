@@ -14,17 +14,22 @@ public class Player : MonoBehaviour
     private GameObject _hitMarkerPrefab;
     [SerializeField]
     private AudioSource _weaponAudio;
-
+    private int currentAmmo;
+    private int maxAmmo = 50;
+    private bool isReloading = false;
+    private UIManager _uiManager;
     // Start is called before the first frame update
     void Start()
     {
         _characterController = GetComponent<CharacterController>();
-        if (_muzzleFlash == null)
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_uiManager == null)
         {
-            Debug.Log("Player: Muzzle Flash is NULL");
+            Debug.Log("Player: UI Manager is NULL");
         }
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        currentAmmo = maxAmmo;
     }
 
     // Update is called once per frame
@@ -35,8 +40,28 @@ public class Player : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && currentAmmo > 0)
         {
+            Shoot();
+            _uiManager.UpdateAmmo(currentAmmo);
+        } 
+        else 
+        {
+            _muzzleFlash.SetActive(false);
+            _weaponAudio.Stop();
+        }
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading)
+        {
+            isReloading = true;
+            StartCoroutine(ReloadRoutine());
+        }
+        CalculateMovement();
+
+    }
+
+    void Shoot()
+    {
+        currentAmmo--;
             _muzzleFlash.SetActive(true);
             if (!_weaponAudio.isPlaying)
             {
@@ -50,14 +75,6 @@ public class Player : MonoBehaviour
                 GameObject hitMarker = (GameObject)Instantiate(_hitMarkerPrefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
                 Destroy(hitMarker, 1f);
             }
-        } 
-        else 
-        {
-            _muzzleFlash.SetActive(false);
-            _weaponAudio.Stop();
-        }
-        CalculateMovement();
-
     }
 
     void CalculateMovement()
@@ -69,5 +86,13 @@ public class Player : MonoBehaviour
         velocity.y -= _gravtiy;
         velocity = transform.transform.TransformDirection(velocity);
         _characterController.Move(velocity * Time.deltaTime);
+    }
+
+    IEnumerator ReloadRoutine() 
+    {
+        yield return new WaitForSeconds(1.5f);
+        currentAmmo = maxAmmo;
+        _uiManager.UpdateAmmo(currentAmmo);
+        isReloading= false;
     }
 }
