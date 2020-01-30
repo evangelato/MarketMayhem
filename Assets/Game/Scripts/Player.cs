@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     private UIManager _uiManager;
     private bool _hasCoin;
     private int _coinCount;
+    [SerializeField]
+    private GameObject _weapon;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +44,7 @@ public class Player : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-        if (Input.GetMouseButton(0) && currentAmmo > 0)
+        if (Input.GetMouseButton(0) && currentAmmo > 0 && _weapon.activeSelf)
         {
             Shoot();
             _uiManager.UpdateAmmo(currentAmmo);
@@ -52,7 +54,7 @@ public class Player : MonoBehaviour
             _muzzleFlash.SetActive(false);
             _weaponAudio.Stop();
         }
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading && _hasCoin)
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading)
         {
             isReloading = true;
             StartCoroutine(ReloadRoutine());
@@ -93,7 +95,6 @@ public class Player : MonoBehaviour
     IEnumerator ReloadRoutine() 
     {
         yield return new WaitForSeconds(1.5f);
-        _hasCoin = false;
         currentAmmo = maxAmmo;
         _uiManager.UpdateAmmo(currentAmmo);
         isReloading= false;
@@ -104,5 +105,22 @@ public class Player : MonoBehaviour
     {
         _hasCoin = true;
         _uiManager.UpdateInventory(_hasCoin);
+    }
+
+    public bool HasCoin()
+    {
+        return _hasCoin;
+    }
+
+    public void RemoveCoin()
+    {
+        _hasCoin = false;
+        _uiManager.UpdateInventory(_hasCoin);
+    }
+
+    public void EquipWeapon()
+    {
+        _weapon.SetActive(true);
+        _uiManager.UpdateAmmo(currentAmmo);
     }
 }
