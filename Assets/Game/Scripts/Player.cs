@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
     private int maxAmmo = 50;
     private bool isReloading = false;
     private UIManager _uiManager;
+    private bool _hasCoin;
+    private int _coinCount;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +52,7 @@ public class Player : MonoBehaviour
             _muzzleFlash.SetActive(false);
             _weaponAudio.Stop();
         }
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading)
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading && _hasCoin)
         {
             isReloading = true;
             StartCoroutine(ReloadRoutine());
@@ -62,19 +64,19 @@ public class Player : MonoBehaviour
     void Shoot()
     {
         currentAmmo--;
-            _muzzleFlash.SetActive(true);
-            if (!_weaponAudio.isPlaying)
-            {
-                _weaponAudio.Play();
-            }
-            Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            RaycastHit hitInfo;
-            if (Physics.Raycast(rayOrigin, out hitInfo, Mathf.Infinity))
-            {
-                Debug.Log("Hit: " + hitInfo.transform.name);
-                GameObject hitMarker = (GameObject)Instantiate(_hitMarkerPrefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                Destroy(hitMarker, 1f);
-            }
+        _muzzleFlash.SetActive(true);
+        if (!_weaponAudio.isPlaying)
+        {
+            _weaponAudio.Play();
+        }
+        Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hitInfo;
+        if (Physics.Raycast(rayOrigin, out hitInfo, Mathf.Infinity))
+        {
+            Debug.Log("Hit: " + hitInfo.transform.name);
+            GameObject hitMarker = (GameObject)Instantiate(_hitMarkerPrefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+            Destroy(hitMarker, 1f);
+        }
     }
 
     void CalculateMovement()
@@ -91,8 +93,16 @@ public class Player : MonoBehaviour
     IEnumerator ReloadRoutine() 
     {
         yield return new WaitForSeconds(1.5f);
+        _hasCoin = false;
         currentAmmo = maxAmmo;
         _uiManager.UpdateAmmo(currentAmmo);
         isReloading= false;
+        _uiManager.UpdateInventory(_hasCoin);
+    }
+
+    public void GetCoin()
+    {
+        _hasCoin = true;
+        _uiManager.UpdateInventory(_hasCoin);
     }
 }
