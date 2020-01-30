@@ -78,6 +78,16 @@ public class Player : MonoBehaviour
             Debug.Log("Hit: " + hitInfo.transform.name);
             GameObject hitMarker = (GameObject)Instantiate(_hitMarkerPrefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
             Destroy(hitMarker, 1f);
+
+            if (hitInfo.transform.name == "Wooden_Crate")
+            {
+                Destructable crate = hitInfo.transform.GetComponent<Destructable>();
+                if (crate != null)
+                {
+                    crate.DestroyCrate();
+                }
+            }
+            
         }
     }
 
